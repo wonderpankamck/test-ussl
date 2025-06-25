@@ -1,0 +1,46 @@
+name: Avica
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Start Building...
+    runs-on: windows-latest
+    timeout-minutes: 360
+    
+    steps:
+      - name: Generate Random Delay
+        id: random_delay
+        run: |
+          $randomDelay = Get-Random -Minimum 10 -Maximum 60
+          echo "::set-output name=delay::$randomDelay"
+        shell: pwsh
+
+      - name: Apply Random Delay
+        run: |
+          Start-Sleep -Seconds ${{ steps.random_delay.outputs.delay }}
+        shell: pwsh
+
+      - name: Downloading & Installing Essentials
+        run: |
+          Invoke-WebRequest -Uri "https://gitlab.com/raposabrty/pcrdp/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
+          cmd /c Downloads.bat
+
+      - name: Dummy Step (Random Command)
+        run: |
+          $dummyCommand = @("echo 'Dummy step 1'", "echo 'Dummy step 2'", "echo 'Dummy step 3'") | Get-Random
+          Invoke-Expression $dummyCommand
+        shell: pwsh
+
+      - name: Show Website
+        run: cmd /c show.bat
+
+      - name: Another Random Delay
+        run: |
+          $randomDelay = Get-Random -Minimum 5 -Maximum 30
+          Start-Sleep -Seconds $randomDelay
+        shell: pwsh
+
+      - name: Time Counter
+        run: cmd /c loop.bat
